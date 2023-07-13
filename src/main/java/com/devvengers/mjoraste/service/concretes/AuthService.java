@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AuthService {
 
-    private  UserRepository userRepository;
+    private UserRepository userRepository;
 
-    private  ModelMapperService modelMapperService;
+    private ModelMapperService modelMapperService;
 
     private PasswordEncoder passwordEncoder;
 
@@ -40,6 +40,9 @@ public class AuthService {
             return "Girilen telefon numarası zaten kayıtlı! ";
         }
         if (bindingResult.hasErrors()) {
+            if (bindingResult.hasFieldErrors("name")) {
+                errorMessage += "Name alanı boş bırakılamaz. ";
+            }
             if (bindingResult.hasFieldErrors("email")) {
                 errorMessage += "E-mail alanı boş bırakılamaz. ";
             }
@@ -73,8 +76,20 @@ public class AuthService {
     }
 
 
+    public LoginResponse userLogin(LoginRequest userLoginRequest, BindingResult bindingResult) {
+        String errorMessage = "";
+        Optional<User> existingUserByEmailandPassword = userRepository.findOneByEmailAndPassword(userLoginRequest.getEmail(), userLoginRequest.getPassword());
 
-    public LoginResponse userLogin(LoginRequest userLoginRequest) {
-        return null;
+        LoginResponse loginResponse = new LoginResponse();
+        if (!existingUserByEmailandPassword.isPresent())
+            return loginResponse;
+        else {
+            loginResponse.setName(existingUserByEmailandPassword.get().getName());
+            loginResponse.setEmail(existingUserByEmailandPassword.get().getEmail());
+            loginResponse.setPhoneNumber(existingUserByEmailandPassword.get().getPhoneNumber());
+            return loginResponse;
+        }
+
     }
+
 }
