@@ -1,7 +1,9 @@
 package com.devvengers.mjoraste.controller;
 
 import com.devvengers.mjoraste.service.concretes.AuthService;
+import com.devvengers.mjoraste.service.requests.LoginRequest;
 import com.devvengers.mjoraste.service.requests.RegisterRequest;
+import com.devvengers.mjoraste.service.responses.LoginResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,9 @@ public class AuthController {
         return authService.userRegister(registerRequest,bindingResult);
     }
 
-   // @GetMapping
-
+    @GetMapping("/login")
+   public LoginResponse userLogin(@RequestBody LoginRequest loginRequest, BindingResult bindingResult){
+       return authService.userLogin(loginRequest, bindingResult);
+   }
 
 }
