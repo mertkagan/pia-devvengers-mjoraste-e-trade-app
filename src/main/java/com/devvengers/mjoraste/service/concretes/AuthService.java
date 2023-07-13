@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -71,7 +70,7 @@ public class AuthService {
             userRepository.save(newUser);
 
             // Başarılı kayıt mesajı
-            return "Kullanıcı başarıyla kaydedildi.";
+            return "User created succesfully.";
         }
     }
 
