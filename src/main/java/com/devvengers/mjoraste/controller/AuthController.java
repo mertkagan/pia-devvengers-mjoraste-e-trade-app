@@ -20,7 +20,7 @@ public class AuthController {
         return authService.userRegister(registerRequest,bindingResult);
     }
 
-    @GetMapping("/login")
+    @GetMapping()
    public LoginResponse userLogin(@RequestBody LoginRequest loginRequest, BindingResult bindingResult){
        return authService.userLogin(loginRequest, bindingResult);
    }

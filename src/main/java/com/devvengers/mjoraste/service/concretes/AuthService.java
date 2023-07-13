@@ -77,18 +77,27 @@ public class AuthService {
 
 
     public LoginResponse userLogin(LoginRequest userLoginRequest, BindingResult bindingResult) {
-        String errorMessage = "";
-        Optional<User> existingUserByEmailandPassword = userRepository.findOneByEmailAndPassword(userLoginRequest.getEmail(), userLoginRequest.getPassword());
 
-        LoginResponse loginResponse = new LoginResponse();
-        if (!existingUserByEmailandPassword.isPresent())
-            return loginResponse;
-        else {
-            loginResponse.setName(existingUserByEmailandPassword.get().getName());
-            loginResponse.setEmail(existingUserByEmailandPassword.get().getEmail());
-            loginResponse.setPhoneNumber(existingUserByEmailandPassword.get().getPhoneNumber());
-            return loginResponse;
+        User existingUserByEmail = userRepository.findByEmail(userLoginRequest.getEmail());
+
+        if (existingUserByEmail != null) {
+            String password = userLoginRequest.getPassword();
+            String encodedPassword = existingUserByEmail.getPassword();
+            Boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+
+            if (isPwdRight) {
+                Optional<User> loggedInUser = userRepository.findOneByEmailAndPassword(userLoginRequest.getEmail(), encodedPassword);
+
+                if (loggedInUser.isPresent()) {
+                    User user = loggedInUser.get();
+                    return new LoginResponse("Login successful", user.getId(), user.getName(), user.getSurName(), user.getEmail(), user.getPhoneNumber());
+                }
+            }
         }
+
+        return new LoginResponse("Login failed", null, null, null, null, null);
+
+
 
     }
 
