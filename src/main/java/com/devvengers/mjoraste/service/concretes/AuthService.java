@@ -1,6 +1,7 @@
 package com.devvengers.mjoraste.service.concretes;
 
 import com.devvengers.mjoraste.core.utilities.mappers.ModelMapperService;
+import com.devvengers.mjoraste.core.utilities.results.*;
 import com.devvengers.mjoraste.entities.User;
 import com.devvengers.mjoraste.repository.UserRepository;
 import com.devvengers.mjoraste.service.requests.LoginRequest;
@@ -8,6 +9,7 @@ import com.devvengers.mjoraste.service.requests.RegisterRequest;
 import com.devvengers.mjoraste.service.responses.LoginResponse;
 import lombok.AllArgsConstructor;
 
+import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class AuthService {
+    final String  SUCCESS = "SUCCESSFUL";
+    final String  UNSUCCESS = "UNSUCCESSFUL";
 
     private UserRepository userRepository;
 
@@ -26,17 +30,20 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
 
-    public String userRegister(@Valid RegisterRequest userRegisterRequest, BindingResult bindingResult) {
+    public DataResult userRegister(@Valid RegisterRequest userRegisterRequest, BindingResult bindingResult) {
         String errorMessage = "";
+        DataResult result;
         User existingUserByEmail = userRepository.findByEmail(userRegisterRequest.getEmail());
         User existingUserByPhoneNumber = userRepository.findByPhoneNumber(userRegisterRequest.getPhoneNumber());
 
 
         if (existingUserByEmail != null) {
-            return "Girilen e-mail zaten kayıtlı! ";
+            String message = "Girilen e-mail zaten kayıtlı! ";
+            return new ErrorDataResult(message, UNSUCCESS);
         }
         if (existingUserByPhoneNumber != null) {
-            return "Girilen telefon numarası zaten kayıtlı! ";
+            String message = "Girilen e-mail zaten kayıtlı! ";
+            return new ErrorDataResult(message, UNSUCCESS);
         }
         if (bindingResult.hasErrors()) {
             if (bindingResult.hasFieldErrors("name")) {
@@ -54,7 +61,7 @@ public class AuthService {
             if (bindingResult.hasFieldErrors("password")) {
                 errorMessage += "Şifre alanı boş bırakılamaz. ";
             }
-            return errorMessage;
+            result = new ErrorDataResult(errorMessage, UNSUCCESS);
         } else {
 
             String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
@@ -70,15 +77,17 @@ public class AuthService {
             userRepository.save(newUser);
 
             // Başarılı kayıt mesajı
-            return "User created succesfully.";
+            String SuccMessage = "User created succesfully.";
+            result = new SuccessDataResult(SuccMessage, SUCCESS);
         }
+        return result;
     }
 
 
-    public LoginResponse userLogin(LoginRequest userLoginRequest, BindingResult bindingResult) {
+    public DataResult userLogin(LoginRequest userLoginRequest, BindingResult bindingResult) {
 
         User existingUserByEmail = userRepository.findByEmail(userLoginRequest.getEmail());
-
+        LoginResponse lr;
         if (existingUserByEmail != null) {
             String password = userLoginRequest.getPassword();
             String encodedPassword = existingUserByEmail.getPassword();
@@ -89,15 +98,12 @@ public class AuthService {
 
                 if (loggedInUser.isPresent()) {
                     User user = loggedInUser.get();
-                    return new LoginResponse("Login successful", user.getId(), user.getName(), user.getSurName(), user.getEmail(), user.getPhoneNumber());
-                }
+                    lr = new LoginResponse("Login successful", user.getId(), user.getName(), user.getSurName(), user.getEmail(), user.getPhoneNumber());
+                    return new SuccessDataResult(lr, "Başarılı"); }
             }
         }
-
-        return new LoginResponse("Login failed", null, null, null, null, null);
-
-
-
+        lr = new LoginResponse("Login failed", null, null, null, null, null);
+        return new SuccessDataResult(lr, "Login failed");
     }
 
 }
