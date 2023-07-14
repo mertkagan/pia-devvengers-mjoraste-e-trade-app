@@ -1,7 +1,9 @@
 package com.devvengers.mjoraste.controller;
 
 import com.devvengers.mjoraste.core.utilities.results.DataResult;
+import com.devvengers.mjoraste.entities.Product;
 import com.devvengers.mjoraste.service.concretes.ProductService;
+import com.devvengers.mjoraste.service.requests.CreateProductRequest;
 import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
 import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
 import lombok.AllArgsConstructor;
@@ -22,10 +24,22 @@ public class ProductController {
        return productService.getAllProductts();
     }
 
-    @GetMapping("{/productId}")
+    @GetMapping("/details/{productId}")
     public DataResult<ProductDetailsResponse> getProductDetailsById(@PathVariable Long productId){
         return productService.getProductDetailsById(productId);
     }
+
+    @GetMapping("/findByCategoryId/{categoryId}")
+    public DataResult<List<GetAllProductResponse>>getAllProductsByCategoryId(@PathVariable Long categoryId){
+        return productService.getAllProductsByCategoryId(categoryId);
+    }
+
+    @PostMapping
+    public DataResult<Product> addProduct(@RequestParam CreateProductRequest createProductRequest){
+        return productService.addProduct(createProductRequest);
+    }
+
+
 
 
 
