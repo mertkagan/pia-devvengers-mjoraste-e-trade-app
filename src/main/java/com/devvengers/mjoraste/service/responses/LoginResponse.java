@@ -9,7 +9,7 @@ public class LoginResponse {
 
     private String message;
 
-    private String id;
+    private Long id;
 
     private String name;
 
