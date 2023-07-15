@@ -1,8 +1,9 @@
 package com.devvengers.mjoraste.service.responses;
 
-import com.devvengers.mjoraste.entities.Brand;
-import com.devvengers.mjoraste.entities.Category;
+import com.devvengers.mjoraste.entities.Color;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class ProductDetailsResponse {
@@ -22,7 +23,7 @@ public class ProductDetailsResponse {
     private String size;
 
 
-    private String color;
+    private List<Color> colorOptions;
 
 
     private int stock;
@@ -31,8 +32,8 @@ public class ProductDetailsResponse {
     private String img;
 
 
-    private Brand brandName;
+    private String brandName;
 
 
-    private Category categoryName;
+    private String categoryName;
 }

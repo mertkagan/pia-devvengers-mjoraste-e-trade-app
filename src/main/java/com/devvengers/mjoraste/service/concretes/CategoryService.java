@@ -20,15 +20,10 @@ public class CategoryService {
 
     private ModelMapperService modelMapperService;
 
-    public DataResult<Category> getCategoryById(Long categoryId){
-        Optional<Category> categoryCheck = categoryRepository.findById(categoryId);
-
-        if (categoryCheck.isPresent()){
-            return new SuccessDataResult<Category>(categoryCheck.get(), "Data retrieved successfully");
-        } else {
-            return new ErrorDataResult<>(null, "Category not found with the given ID.");
-        }
+    public Optional<Category> getCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId);
     }
+
 
 
 

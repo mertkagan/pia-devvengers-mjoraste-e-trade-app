@@ -25,6 +25,6 @@ public class GetAllProductResponse {
     private String img;
 
 
-    private Brand brandName;
+    private String brandName;
 
 }

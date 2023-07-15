@@ -4,12 +4,15 @@ import com.devvengers.mjoraste.core.utilities.results.DataResult;
 import com.devvengers.mjoraste.entities.Product;
 import com.devvengers.mjoraste.service.concretes.ProductService;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
+import com.devvengers.mjoraste.service.responses.GetAllProductByCategoryIdResponse;
 import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
 import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,21 +24,25 @@ public class ProductController {
 
     @GetMapping
     public DataResult<List<GetAllProductResponse>> getAllProducts(){
-       return productService.getAllProductts();
+       return productService.getAllProducts();
     }
 
     @GetMapping("/details/{productId}")
     public DataResult<ProductDetailsResponse> getProductDetailsById(@PathVariable Long productId){
         return productService.getProductDetailsById(productId);
     }
+    
 
     @GetMapping("/findByCategoryId/{categoryId}")
-    public DataResult<List<GetAllProductResponse>>getAllProductsByCategoryId(@PathVariable Long categoryId){
+    public DataResult<List<GetAllProductByCategoryIdResponse>>getAllProductsByCategoryId(@PathVariable Long categoryId){
         return productService.getAllProductsByCategoryId(categoryId);
     }
 
+
+
     @PostMapping
-    public DataResult<Product> addProduct(@RequestParam CreateProductRequest createProductRequest){
+    @Validated
+    public DataResult<Product> addProduct(@Valid @RequestBody CreateProductRequest createProductRequest){
         return productService.addProduct(createProductRequest);
     }
 

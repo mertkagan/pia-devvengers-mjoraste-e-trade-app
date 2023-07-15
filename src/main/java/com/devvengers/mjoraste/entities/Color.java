@@ -9,20 +9,25 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "brands")
+@Table(name = "colors")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler" , "products"})
-public class Brand {
+public class Color {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "color_name")
     private String name;
 
-    @OneToMany(mappedBy = "brand")
-    private List<Product> products;
+    @Column(name = "hex_code")
+    private String hexCode;
+
+    @Column(name = "decimal_code")
+    private String decimalCode;
+
+
 }

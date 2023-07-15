@@ -34,8 +34,10 @@ public class Product {
     @Column(name = "size")
     private String size;
 
-    @Column(name = "color")
-    private String color;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private List<Color> colorOptions;
+
 
     @Column(name = "stock")
     private int stock;

@@ -5,6 +5,7 @@ import com.devvengers.mjoraste.core.utilities.results.DataResult;
 import com.devvengers.mjoraste.core.utilities.results.ErrorDataResult;
 import com.devvengers.mjoraste.core.utilities.results.SuccessDataResult;
 import com.devvengers.mjoraste.entities.Brand;
+import com.devvengers.mjoraste.entities.Category;
 import com.devvengers.mjoraste.repository.BrandRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,14 +21,8 @@ public class BrandService {
 
     private ModelMapperService modelMapperService;
 
-    public DataResult<Brand> getBrandById(Long brandId){
-        Optional<Brand> brandCheck = brandRepository.findById(brandId);
-
-        if (brandCheck.isPresent()){
-            return new SuccessDataResult<Brand>(brandCheck.get(), "Data retrieved successfully");
-        } else {
-            return new ErrorDataResult<>(null, "Brand not found with the given ID.");
-        }
+    public Optional<Brand> getBrandById(Long brandId){
+       return brandRepository.findById(brandId);
     }
 
 }
