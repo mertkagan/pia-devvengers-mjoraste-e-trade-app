@@ -96,11 +96,6 @@ public class ProductService {
             return new ErrorDataResult<>(null, "Category not found with the given ID.");
         }
 
-        if (!findCategoryById.isPresent()) {
-            return new ErrorDataResult<>(null, "Category not found with the given ID.");
-        }
-
-
         Product newProduct = this.modelMapperService.forRequest().map(createProductRequest, Product.class);
         productRepository.save(newProduct);
 
