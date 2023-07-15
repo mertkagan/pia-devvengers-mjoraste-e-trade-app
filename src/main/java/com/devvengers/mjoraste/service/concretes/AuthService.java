@@ -2,10 +2,15 @@ package com.devvengers.mjoraste.service.concretes;
 
 import com.devvengers.mjoraste.core.utilities.mappers.ModelMapperService;
 import com.devvengers.mjoraste.core.utilities.results.*;
+import com.devvengers.mjoraste.entities.Address;
 import com.devvengers.mjoraste.entities.User;
+import com.devvengers.mjoraste.repository.AddressRepository;
 import com.devvengers.mjoraste.repository.UserRepository;
+import com.devvengers.mjoraste.service.requests.AddressGetRequest;
+import com.devvengers.mjoraste.service.requests.AddressRequest;
 import com.devvengers.mjoraste.service.requests.LoginRequest;
 import com.devvengers.mjoraste.service.requests.RegisterRequest;
+import com.devvengers.mjoraste.service.responses.AddressResponse;
 import com.devvengers.mjoraste.service.responses.LoginResponse;
 import lombok.AllArgsConstructor;
 
@@ -17,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import javax.validation.Valid;
 import java.util.Optional;
 
+
 @Service
 @AllArgsConstructor
 public class AuthService {
@@ -24,6 +30,7 @@ public class AuthService {
     final String  UNSUCCESS = "UNSUCCESSFUL";
 
     private UserRepository userRepository;
+    private AddressRepository addressRepository;
 
     private ModelMapperService modelMapperService;
 
@@ -104,6 +111,45 @@ public class AuthService {
         }
         lr = new LoginResponse("Login failed", null, null, null, null, null);
         return new SuccessDataResult(lr, "Login failed");
+    }
+
+    public Result getUserAddress(AddressGetRequest addressRequest, BindingResult bindingResult) {
+        User user = userRepository.findById(addressRequest.getUserId());
+        Address resultAddress = user.getAddress();
+        AddressResponse ar;
+        if (resultAddress != null) {
+            ar = new AddressResponse();
+            ar.setId(resultAddress.getId());
+            ar.setTown(resultAddress.getTown());
+            ar.setFullAddress(resultAddress.getFullAddress());
+            ar.setCity(resultAddress.getCity());
+            return new SuccessDataResult(ar, SUCCESS);
+        }
+        return new ErrorResult(UNSUCCESS);
+    }
+
+    public DataResult setUserAddress(AddressRequest addressRequest, BindingResult bindingResult) {
+        //AddressRequest
+        boolean error = false;
+        DataResult result;
+
+        if (bindingResult.hasErrors()) {
+            result = new ErrorDataResult(UNSUCCESS);
+        } else {
+            Address address = new Address();
+            address.setFullAddress(address.getFullAddress());
+            address.setCity(address.getCity());
+            address.setTown(address.getTown());
+            address.setUser(addressRequest.getUser());
+
+            addressRepository.save(address);
+            User user = userRepository.findById(addressRequest.getUser().getId());
+            user.setAddress(address);
+            userRepository.save(user);
+            result = new SuccessDataResult(SUCCESS);
+        }
+
+        return result;
     }
 
 }

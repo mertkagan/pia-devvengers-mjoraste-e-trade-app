@@ -1,7 +1,10 @@
 package com.devvengers.mjoraste.controller;
 
 import com.devvengers.mjoraste.core.utilities.results.DataResult;
+import com.devvengers.mjoraste.core.utilities.results.Result;
 import com.devvengers.mjoraste.service.concretes.AuthService;
+import com.devvengers.mjoraste.service.requests.AddressGetRequest;
+import com.devvengers.mjoraste.service.requests.AddressRequest;
 import com.devvengers.mjoraste.service.requests.LoginRequest;
 import com.devvengers.mjoraste.service.requests.RegisterRequest;
 import com.devvengers.mjoraste.service.responses.LoginResponse;
@@ -25,5 +28,15 @@ public class AuthController {
    public DataResult userLogin(@RequestBody LoginRequest loginRequest, BindingResult bindingResult){
        return authService.userLogin(loginRequest, bindingResult);
    }
+
+    @GetMapping("/address")
+    public Result getUserAdress(@RequestBody AddressGetRequest addressRequest, BindingResult bindingResult) {
+        return authService.getUserAddress(addressRequest, bindingResult);
+    }
+
+    @PostMapping("/address")
+    public DataResult setUserAdress(@RequestBody AddressRequest addressRequest, BindingResult bindingResult){
+        return authService.setUserAddress(addressRequest, bindingResult);
+    }
 
 }
