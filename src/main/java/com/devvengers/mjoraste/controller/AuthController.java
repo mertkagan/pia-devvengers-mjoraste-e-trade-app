@@ -19,24 +19,24 @@ public class AuthController {
 
     private AuthService authService;
 
-    @PostMapping
+    @PostMapping("/register")
     public DataResult userRegister(@RequestBody RegisterRequest registerRequest, BindingResult bindingResult){
         return authService.userRegister(registerRequest,bindingResult);
+
     }
-
-    @GetMapping()
-   public DataResult userLogin(@RequestBody LoginRequest loginRequest, BindingResult bindingResult){
-       return authService.userLogin(loginRequest, bindingResult);
+    @PostMapping("/login")
+   public DataResult<LoginResponse> userLogin(@RequestBody LoginRequest loginRequest){
+       return authService.userLogin(loginRequest);
    }
-
+/*
     @GetMapping("/address")
     public Result getUserAdress(@RequestBody AddressGetRequest addressRequest, BindingResult bindingResult) {
         return authService.getUserAddress(addressRequest, bindingResult);
-    }
+    }*/
 
-    @PostMapping("/address")
+/*    @PostMapping("/address")
     public DataResult setUserAdress(@RequestBody AddressRequest addressRequest, BindingResult bindingResult){
         return authService.setUserAddress(addressRequest, bindingResult);
-    }
+    }*/
 
 }

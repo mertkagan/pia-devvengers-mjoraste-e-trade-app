@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -91,29 +93,28 @@ public class AuthService {
     }
 
 
-    public DataResult userLogin(LoginRequest userLoginRequest, BindingResult bindingResult) {
+    public DataResult<LoginResponse> userLogin(LoginRequest userLoginRequest) {
 
-        User existingUserByEmail = userRepository.findByEmail(userLoginRequest.getEmail());
-        LoginResponse lr;
-        if (existingUserByEmail != null) {
-            String password = userLoginRequest.getPassword();
-            String encodedPassword = existingUserByEmail.getPassword();
-            Boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+        User user = userRepository.findByEmail(userLoginRequest.getEmail());
 
-            if (isPwdRight) {
-                Optional<User> loggedInUser = userRepository.findOneByEmailAndPassword(userLoginRequest.getEmail(), encodedPassword);
-
-                if (loggedInUser.isPresent()) {
-                    User user = loggedInUser.get();
-                    lr = new LoginResponse("Login successful", user.getId(), user.getName(), user.getSurName(), user.getEmail(), user.getPhoneNumber());
-                    return new SuccessDataResult(lr, "Başarılı"); }
-            }
+        if (user == null) {
+            return new ErrorDataResult<>(null,"Username or password is incorrect");
         }
-        lr = new LoginResponse("Login failed", null, null, null, null, null);
-        return new SuccessDataResult(lr, "Login failed");
+
+        String password = userLoginRequest.getPassword();
+        String encodedPassword = user.getPassword();
+        Boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+
+        if (isPwdRight){
+            Optional<User> user1 = userRepository.findOneByEmailAndPassword(userLoginRequest.getEmail(),encodedPassword);
+            LoginResponse loginResponse = new LoginResponse(user.getId(),user.getEmail(),user.getName(),user.getSurName(),user.getPhoneNumber());
+            return new SuccessDataResult<LoginResponse>(loginResponse,"Login succesfully.");
+        }
+
+        return new ErrorDataResult<>(null,"Username or password is incorrect");
     }
 
-    public Result getUserAddress(AddressGetRequest addressRequest, BindingResult bindingResult) {
+   /* public Result getUserAddress(AddressGetRequest addressRequest, BindingResult bindingResult) {
         User user = userRepository.findById(addressRequest.getUserId());
         Address resultAddress = user.getAddress();
         AddressResponse ar;
@@ -126,9 +127,9 @@ public class AuthService {
             return new SuccessDataResult(ar, SUCCESS);
         }
         return new ErrorResult(UNSUCCESS);
-    }
+    }*/
 
-    public DataResult setUserAddress(AddressRequest addressRequest, BindingResult bindingResult) {
+   /* public DataResult setUserAddress(AddressRequest addressRequest, BindingResult bindingResult) {
         //AddressRequest
         boolean error = false;
         DataResult result;
@@ -151,5 +152,5 @@ public class AuthService {
 
         return result;
     }
-
+*/
 }

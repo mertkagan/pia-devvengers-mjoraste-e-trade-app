@@ -16,6 +16,8 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler" , "products"})
 public class Brand {
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

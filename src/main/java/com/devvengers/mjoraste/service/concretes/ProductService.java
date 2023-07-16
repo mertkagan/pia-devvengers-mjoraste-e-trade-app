@@ -6,7 +6,6 @@ import com.devvengers.mjoraste.core.utilities.results.ErrorDataResult;
 import com.devvengers.mjoraste.core.utilities.results.SuccessDataResult;
 import com.devvengers.mjoraste.entities.Brand;
 import com.devvengers.mjoraste.entities.Category;
-import com.devvengers.mjoraste.entities.Color;
 import com.devvengers.mjoraste.entities.Product;
 import com.devvengers.mjoraste.repository.ProductRepository;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
@@ -15,14 +14,10 @@ import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
 import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
-import javax.swing.text.html.Option;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor

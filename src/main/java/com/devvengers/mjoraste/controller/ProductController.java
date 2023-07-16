@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/products") //localhost:1907/api/products
 @AllArgsConstructor
 public class ProductController {
 
