@@ -6,32 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "colors")
+@Table(name = "sizes")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler" , "product"})
-public class Color {
-
+public class Size {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "color_name")
+    @Column(name = "name")
     private String name;
-
-    @Column(name = "hex_code")
-    private String hexCode;
-
-    @Column(name = "decimal_code")
-    private String decimalCode;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
-
 }

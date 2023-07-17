@@ -1,0 +1,8 @@
+package com.devvengers.mjoraste.repository;
+
+
+import com.devvengers.mjoraste.entities.CartItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CartItemRepository extends JpaRepository<CartItem,Long> {
+}

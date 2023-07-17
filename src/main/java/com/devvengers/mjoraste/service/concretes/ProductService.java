@@ -4,11 +4,11 @@ import com.devvengers.mjoraste.core.utilities.mappers.ModelMapperService;
 import com.devvengers.mjoraste.core.utilities.results.DataResult;
 import com.devvengers.mjoraste.core.utilities.results.ErrorDataResult;
 import com.devvengers.mjoraste.core.utilities.results.SuccessDataResult;
-import com.devvengers.mjoraste.entities.Brand;
-import com.devvengers.mjoraste.entities.Category;
-import com.devvengers.mjoraste.entities.Product;
+import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.ProductRepository;
+import com.devvengers.mjoraste.service.requests.CreateProductColorRequest;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
+import com.devvengers.mjoraste.service.requests.CreateProductSizeRequest;
 import com.devvengers.mjoraste.service.responses.GetAllProductByCategoryIdResponse;
 import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
 import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
@@ -53,7 +53,7 @@ public class ProductService {
         Product product = productRepository.findById(productId).orElse(null);
 
         if (product == null ) {
-            return new ErrorDataResult<>(null, "Category not found with the given ID.");
+            return new ErrorDataResult<>(null, "Product not found with the given ID.");
         }else {
             ProductDetailsResponse response = this.modelMapperService.forResponse().map(product, ProductDetailsResponse.class);
             return new SuccessDataResult<ProductDetailsResponse>(response, "Product details retrieved successfully.");
@@ -81,22 +81,46 @@ public class ProductService {
 
 
     public DataResult<Product> addProduct(CreateProductRequest createProductRequest) {
-        Optional<Brand> findBrandById = brandService.getBrandById(createProductRequest.getBrandId());
-        Optional<Category> findCategoryById = categoryService.getCategoryById(createProductRequest.getCategoryId());
-        if (!findBrandById.isPresent()) {
-            return new ErrorDataResult<>(null, "Brand not found with the given ID.");
+        Brand brand = brandService.getBrandById(createProductRequest.getBrandId())
+                .orElseThrow(() -> new IllegalArgumentException("Brand not found with ID: " + createProductRequest.getBrandId()));
+        Category category = categoryService.getCategoryById(createProductRequest.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + createProductRequest.getCategoryId()));
+
+        Product product = new Product();
+        product.setName(createProductRequest.getName());
+        product.setPrice(createProductRequest.getPrice());
+        product.setDescription(createProductRequest.getDescription());
+        product.setStock(createProductRequest.getStock());
+        product.setImg(createProductRequest.getImg());
+        product.setBrand(brand);
+        product.setCategory(category);
+        product.setColorOptions(new ArrayList<>());
+        product.setSizeOptions(new ArrayList<>());
+
+        // Ürün renk seçeneklerini oluşturup ürüne eklemek için döngü
+        for (CreateProductColorRequest colorRequest : createProductRequest.getColorOptions()) {
+            Color color = new Color();
+            color.setName(colorRequest.getName());
+            color.setHexCode(colorRequest.getHexCode());
+            color.setProduct(product);
+            product.getColorOptions().add(color);
         }
 
-        if (!findCategoryById.isPresent()) {
-            return new ErrorDataResult<>(null, "Category not found with the given ID.");
+        // Ürün boyut seçeneklerini oluşturup ürüne eklemek için döngü
+        for (CreateProductSizeRequest sizeRequest : createProductRequest.getSizeOptions()) {
+            Size size = new Size();
+            size.setName(sizeRequest.getName());
+            size.setProduct(product);
+            product.getSizeOptions().add(size);
         }
 
-        Product newProduct = this.modelMapperService.forRequest().map(createProductRequest, Product.class);
-        productRepository.save(newProduct);
-
-        return new SuccessDataResult<>(newProduct, "The product has been successfully added.");
+        // Ürünü veritabanına kaydederek sonucu döndürmek
+        return new SuccessDataResult<>(productRepository.save(product), "The product has been successfully added.");
     }
 
 
-
 }
+
+
+
+

@@ -10,7 +10,10 @@ import com.devvengers.mjoraste.service.requests.RegisterRequest;
 import com.devvengers.mjoraste.service.responses.LoginResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,7 +28,8 @@ public class AuthController {
 
     }
     @PostMapping("/login")
-   public DataResult<LoginResponse> userLogin(@RequestBody LoginRequest loginRequest){
+    @Validated
+   public DataResult<LoginResponse> userLogin(@Valid @RequestBody LoginRequest loginRequest){
        return authService.userLogin(loginRequest);
    }
 /*

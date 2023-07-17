@@ -1,6 +1,7 @@
 package com.devvengers.mjoraste.service.responses;
 
 import com.devvengers.mjoraste.entities.Color;
+import com.devvengers.mjoraste.entities.Size;
 import lombok.Data;
 
 import java.util.List;
@@ -20,10 +21,9 @@ public class ProductDetailsResponse {
     private String description;
 
 
-    private String size;
-
-
     private List<Color> colorOptions;
+
+    private List<Size> sizeOptions;
 
 
     private int stock;

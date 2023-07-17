@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,12 +32,13 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "size")
-    private String size;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private List<Color> colorOptions;
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    private List<Color> colorOptions ;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Size> sizeOptions ;
 
 
     @Column(name = "stock")
@@ -55,6 +57,8 @@ public class Product {
     @JoinColumn(name = "category_id",referencedColumnName = "id")
     @JsonIgnore
     private Category category;
+
+
 
 
 }

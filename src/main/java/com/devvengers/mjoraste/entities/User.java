@@ -2,6 +2,7 @@ package com.devvengers.mjoraste.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -33,9 +34,16 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "is_admin",columnDefinition = "boolean default false")
+    private Boolean isAdmin;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+
+    @OneToOne(mappedBy = "user")
+    @EqualsAndHashCode.Exclude
+    private Cart cart;
 
 
 }

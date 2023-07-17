@@ -7,6 +7,7 @@ import com.devvengers.mjoraste.service.requests.CreateProductRequest;
 import com.devvengers.mjoraste.service.responses.GetAllProductByCategoryIdResponse;
 import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
 import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
@@ -42,14 +43,21 @@ public class ProductController {
 
     @PostMapping
     @Validated
+    @ApiOperation(
+            value = "Create Product",
+            notes = "Bu API yöntemi, sistemde yeni bir ürün oluşturmak için kullanılır. " +
+                    "Ürün adı, fiyatı, açıklaması, boyutu, stok miktarı ve marka ile kategori bilgileri " +
+                    "oluşturulacak ürün için zorunlu alanlardır. " +
+                    "Ürün oluşturulurken ürünün renk seçenekleri ve resim URL'si de isteğe bağlı olarak eklenilebilir. " +
+                    "Bu API, JSON formatında gönderilen isteğe göre yeni bir ürün oluşturur. " +
+                    "Oluşturulan ürünün benzersiz bir kimliği veritabanında saklanır ve cevap olarak döndürülür. " +
+                    "Oluşturma işlemi başarılı bir şekilde tamamlandığında, HTTP 200 başarılı yanıtı döner ve " +
+                    "oluşturulan ürün nesnesini içeren cevap verir. " +
+                    "Eğer oluşturma işlemi başarısız olursa, uygun hata mesajı ve HTTP hata kodu ile hata yanıtı döner."
+    )
     public DataResult<Product> addProduct(@Valid @RequestBody CreateProductRequest createProductRequest){
         return productService.addProduct(createProductRequest);
     }
-
-
-
-
-
 
 
 

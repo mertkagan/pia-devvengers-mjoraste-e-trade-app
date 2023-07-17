@@ -1,6 +1,7 @@
 package com.devvengers.mjoraste.service.requests;
 
 import com.devvengers.mjoraste.entities.Color;
+import com.devvengers.mjoraste.entities.Size;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -19,11 +20,10 @@ public class CreateProductRequest {
     @NotBlank(message = "Description is mandatory")
     private String description;
 
-    @NotBlank(message = "Size is mandatory")
-    private String size;
 
+    private List<CreateProductColorRequest> colorOptions;
 
-    private List<Color> colorOptions;
+    private List<CreateProductSizeRequest> sizeOptions;
 
 
     @NotNull(message = "Stock is mandatory")
