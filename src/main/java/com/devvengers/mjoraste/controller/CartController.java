@@ -30,4 +30,9 @@ public class CartController {
         //art cart = cartService.getCart(userId);
         return cartService.getCart(userId);
     }
+
+    @DeleteMapping("/delete")
+    public Result deleteCartByUserId(Long userId){
+        return cartService.deleteCartByUserId(userId);
+    }
 }

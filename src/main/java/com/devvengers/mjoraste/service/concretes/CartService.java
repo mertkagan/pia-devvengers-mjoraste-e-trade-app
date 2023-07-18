@@ -15,6 +15,7 @@ import com.devvengers.mjoraste.service.responses.GetUserCartResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -75,6 +76,19 @@ public class CartService {
         Cart cart = user.getCart();
         GetUserCartResponse response = modelMapperService.forResponse().map(cart, GetUserCartResponse.class);
         return user != null ? new SuccessDataResult<GetUserCartResponse>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"No such user exists.");
+    }
+
+    @Transactional
+    public Result deleteCartByUserId(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isPresent()){
+            cartRepository.deleteByUserId(userId);
+            return new SuccessResult("Cart deleted.");
+        }else {
+            return new ErrorResult("User not found");
+        }
+
     }
 
     public void calculateTotalPrice(Cart cart) {

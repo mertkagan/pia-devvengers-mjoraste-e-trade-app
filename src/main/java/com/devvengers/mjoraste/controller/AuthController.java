@@ -32,15 +32,6 @@ public class AuthController {
    public DataResult<LoginResponse> userLogin(@Valid @RequestBody LoginRequest loginRequest){
        return authService.userLogin(loginRequest);
    }
-/*
-    @GetMapping("/address")
-    public Result getUserAdress(@RequestBody AddressGetRequest addressRequest, BindingResult bindingResult) {
-        return authService.getUserAddress(addressRequest, bindingResult);
-    }*/
 
-/*    @PostMapping("/address")
-    public DataResult setUserAdress(@RequestBody AddressRequest addressRequest, BindingResult bindingResult){
-        return authService.setUserAddress(addressRequest, bindingResult);
-    }*/
 
 }
