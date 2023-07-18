@@ -1,16 +1,14 @@
 package com.devvengers.mjoraste.service.concretes;
 
 import com.devvengers.mjoraste.core.utilities.mappers.ModelMapperService;
-import com.devvengers.mjoraste.core.utilities.results.DataResult;
-import com.devvengers.mjoraste.core.utilities.results.ErrorDataResult;
-import com.devvengers.mjoraste.core.utilities.results.SuccessDataResult;
+import com.devvengers.mjoraste.core.utilities.results.*;
 import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.ProductRepository;
-import com.devvengers.mjoraste.service.requests.CreateProductColorRequest;
+import com.devvengers.mjoraste.service.requests.CreateProductImageRequest;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
-import com.devvengers.mjoraste.service.requests.CreateProductSizeRequest;
 import com.devvengers.mjoraste.service.responses.GetAllProductByCategoryIdResponse;
 import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
+import com.devvengers.mjoraste.service.responses.GetProductImageResponse;
 import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,21 +29,33 @@ public class ProductService {
 
     private CategoryService categoryService;
 
-    private ColorService colorService;
+    private ProductImageService productImageService;
+
 
     public DataResult<List<GetAllProductResponse>> getAllProducts(){
 
         List<Product> products = productRepository.findAll();
-
         List<GetAllProductResponse> response = new ArrayList<>();
 
         for (Product product : products) {
-            GetAllProductResponse productResponse = this.modelMapperService.forResponse().map(product, GetAllProductResponse.class);
+            GetAllProductResponse productResponse = new GetAllProductResponse();
+            productResponse.setId(product.getId());
+            productResponse.setName(product.getName());
+            productResponse.setPrice(product.getPrice());
+            productResponse.setBrandName(product.getBrand().getName());
+
+            List<GetProductImageResponse> imageResponses = new ArrayList<>();
+            for (ProductImage image : product.getImages()) {
+                GetProductImageResponse imageResponse = new GetProductImageResponse();
+                imageResponse.setImageUrl(image.getImageUrl());
+                imageResponses.add(imageResponse);
+            }
+
+            productResponse.setImages(imageResponses);
             response.add(productResponse);
         }
 
-        return new SuccessDataResult<List<GetAllProductResponse>>
-                (response,"Products retrieved successfully.");
+        return new SuccessDataResult<>(response, "Products retrieved successfully.");
     }
 
     public DataResult<ProductDetailsResponse> getProductDetailsById(Long productId){
@@ -80,42 +90,29 @@ public class ProductService {
 
 
 
-    public DataResult<Product> addProduct(CreateProductRequest createProductRequest) {
-        Brand brand = brandService.getBrandById(createProductRequest.getBrandId())
-                .orElseThrow(() -> new IllegalArgumentException("Brand not found with ID: " + createProductRequest.getBrandId()));
-        Category category = categoryService.getCategoryById(createProductRequest.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + createProductRequest.getCategoryId()));
+    public Result addProduct(CreateProductRequest createProductRequest) {
+        Optional<Category> category = categoryService.getCategoryById(createProductRequest.getCategoryId());
+        Optional<Brand> brand = brandService.getBrandById(createProductRequest.getBrandId());
 
-        Product product = new Product();
-        product.setName(createProductRequest.getName());
-        product.setPrice(createProductRequest.getPrice());
-        product.setDescription(createProductRequest.getDescription());
-        product.setStock(createProductRequest.getStock());
-        product.setImg(createProductRequest.getImg());
-        product.setBrand(brand);
-        product.setCategory(category);
-        product.setColorOptions(new ArrayList<>());
-        product.setSizeOptions(new ArrayList<>());
+        if (category == null) {
+            return new ErrorResult("Invalid category");
+        } else if (brand == null) {
+            return new ErrorResult("Invalid brand");
+        } else {
+            Product product = this.modelMapperService.forRequest().map(createProductRequest, Product.class);
+            product.setImages(new ArrayList<>());
 
-        // Ürün renk seçeneklerini oluşturup ürüne eklemek için döngü
-        for (CreateProductColorRequest colorRequest : createProductRequest.getColorOptions()) {
-            Color color = new Color();
-            color.setName(colorRequest.getName());
-            color.setHexCode(colorRequest.getHexCode());
-            color.setProduct(product);
-            product.getColorOptions().add(color);
+            for (CreateProductImageRequest imageRequest : createProductRequest.getImageList()) {
+                ProductImage image = new ProductImage();
+                image.setImageUrl(imageRequest.getImageUrl());
+                image.setProduct(product);
+                product.getImages().add(image);
+            }
+            productRepository.save(product);
+            return new SuccessResult("Product created successfully");
         }
 
-        // Ürün boyut seçeneklerini oluşturup ürüne eklemek için döngü
-        for (CreateProductSizeRequest sizeRequest : createProductRequest.getSizeOptions()) {
-            Size size = new Size();
-            size.setName(sizeRequest.getName());
-            size.setProduct(product);
-            product.getSizeOptions().add(size);
-        }
 
-        // Ürünü veritabanına kaydederek sonucu döndürmek
-        return new SuccessDataResult<>(productRepository.save(product), "The product has been successfully added.");
     }
 
 

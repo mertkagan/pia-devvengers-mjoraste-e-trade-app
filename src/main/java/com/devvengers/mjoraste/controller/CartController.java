@@ -1,8 +1,11 @@
 package com.devvengers.mjoraste.controller;
 
+import com.devvengers.mjoraste.core.utilities.results.DataResult;
+import com.devvengers.mjoraste.core.utilities.results.Result;
 import com.devvengers.mjoraste.entities.Cart;
 import com.devvengers.mjoraste.service.concretes.CartService;
 import com.devvengers.mjoraste.service.requests.CreateCartItemRequest;
+import com.devvengers.mjoraste.service.responses.GetUserCartResponse;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +20,14 @@ public class CartController {
 
 
     @PostMapping("/{userId}/add")
-    public ResponseEntity<String> addToCart(@RequestParam Long userId, @RequestBody CreateCartItemRequest cartItemRequest) {
-        cartService.addToCart(userId, cartItemRequest);
-        System.out.println(cartItemRequest);
-        System.out.println(userId);
-        return ResponseEntity.ok("Product added to cart successfully.");
+    public Result addToCart(@RequestParam Long userId, @RequestBody CreateCartItemRequest cartItemRequest) {
+        return cartService.addToCart(userId, cartItemRequest);
+
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Cart> getCart(@PathVariable Long userId) {
-        Cart cart = cartService.getCart(userId);
-        return ResponseEntity.ok(cart);
+    public DataResult<GetUserCartResponse> getCart(@PathVariable Long userId) {
+        //art cart = cartService.getCart(userId);
+        return cartService.getCart(userId);
     }
 }

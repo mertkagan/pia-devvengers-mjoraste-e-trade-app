@@ -33,19 +33,17 @@ public class Product {
     private String description;
 
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Column(name = "color")
+    private String color ;
 
-    private List<Color> colorOptions ;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Size> sizeOptions ;
+    @Column(name="size")
+    private String size;
 
 
     @Column(name = "stock")
     private int stock;
 
-    @Column(name = "img")
-    private String img;
+
 
     @ManyToOne
     @JoinColumn(name = "brand_id")
@@ -57,6 +55,9 @@ public class Product {
     @JoinColumn(name = "category_id",referencedColumnName = "id")
     @JsonIgnore
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductImage> images;
 
 
 

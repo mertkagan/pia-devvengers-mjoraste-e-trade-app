@@ -1,7 +1,6 @@
 package com.devvengers.mjoraste.service.requests;
 
-import com.devvengers.mjoraste.entities.Color;
-import com.devvengers.mjoraste.entities.Size;
+import com.devvengers.mjoraste.entities.ProductImage;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -21,16 +20,16 @@ public class CreateProductRequest {
     private String description;
 
 
-    private List<CreateProductColorRequest> colorOptions;
+    private String color;
 
-    private List<CreateProductSizeRequest> sizeOptions;
+    private String size;
 
 
     @NotNull(message = "Stock is mandatory")
     private Integer stock;
 
-    @NotBlank(message = "Image URL is mandatory")
-    private String img;
+
+    private List<CreateProductImageRequest> imageList;
 
     @NotNull(message = "Brand ID is mandatory")
     private Long brandId;

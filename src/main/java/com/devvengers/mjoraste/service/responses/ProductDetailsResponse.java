@@ -1,7 +1,6 @@
 package com.devvengers.mjoraste.service.responses;
 
-import com.devvengers.mjoraste.entities.Color;
-import com.devvengers.mjoraste.entities.Size;
+import com.devvengers.mjoraste.entities.ProductImage;
 import lombok.Data;
 
 import java.util.List;
@@ -21,15 +20,15 @@ public class ProductDetailsResponse {
     private String description;
 
 
-    private List<Color> colorOptions;
+    private String colorName;
 
-    private List<Size> sizeOptions;
+    private String size;
 
 
     private int stock;
 
 
-    private String img;
+    private List<GetProductImageResponse> images;
 
 
     private String brandName;

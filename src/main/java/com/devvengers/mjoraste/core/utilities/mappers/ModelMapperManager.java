@@ -1,5 +1,7 @@
 package com.devvengers.mjoraste.core.utilities.mappers;
 
+import com.devvengers.mjoraste.entities.CartItem;
+import com.devvengers.mjoraste.service.responses.CartItemResponse;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -18,6 +20,8 @@ public class ModelMapperManager implements ModelMapperService {
                 .setAmbiguityIgnored(true)//belirsizlik olduğunda onu ignore et.
                 .setMatchingStrategy(MatchingStrategies.LOOSE);
         //GEVŞEK MAPLAMA : responseda sadece olanı mapla
+
+
 
         return this.modelMapper;
     }

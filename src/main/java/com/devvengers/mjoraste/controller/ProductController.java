@@ -1,6 +1,7 @@
 package com.devvengers.mjoraste.controller;
 
 import com.devvengers.mjoraste.core.utilities.results.DataResult;
+import com.devvengers.mjoraste.core.utilities.results.Result;
 import com.devvengers.mjoraste.entities.Product;
 import com.devvengers.mjoraste.service.concretes.ProductService;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
@@ -55,7 +56,7 @@ public class ProductController {
                     "oluşturulan ürün nesnesini içeren cevap verir. " +
                     "Eğer oluşturma işlemi başarısız olursa, uygun hata mesajı ve HTTP hata kodu ile hata yanıtı döner."
     )
-    public DataResult<Product> addProduct(@Valid @RequestBody CreateProductRequest createProductRequest){
+    public Result addProduct(@Valid @RequestBody CreateProductRequest createProductRequest){
         return productService.addProduct(createProductRequest);
     }
 

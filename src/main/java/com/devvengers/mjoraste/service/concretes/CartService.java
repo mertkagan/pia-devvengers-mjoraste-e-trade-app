@@ -1,8 +1,7 @@
 package com.devvengers.mjoraste.service.concretes;
 
 import com.devvengers.mjoraste.core.utilities.mappers.ModelMapperService;
-import com.devvengers.mjoraste.core.utilities.results.Result;
-import com.devvengers.mjoraste.core.utilities.results.SuccessResult;
+import com.devvengers.mjoraste.core.utilities.results.*;
 import com.devvengers.mjoraste.entities.Cart;
 import com.devvengers.mjoraste.entities.CartItem;
 import com.devvengers.mjoraste.entities.Product;
@@ -12,8 +11,11 @@ import com.devvengers.mjoraste.repository.CartRepository;
 import com.devvengers.mjoraste.repository.ProductRepository;
 import com.devvengers.mjoraste.repository.UserRepository;
 import com.devvengers.mjoraste.service.requests.CreateCartItemRequest;
+import com.devvengers.mjoraste.service.responses.GetUserCartResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +32,7 @@ public class CartService {
     private ProductRepository productRepository;
 
 
-    public void addToCart(Long userId, CreateCartItemRequest createCartItemRequest) {
+    public Result addToCart(Long userId, CreateCartItemRequest createCartItemRequest) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NullPointerException("Kullanıcı mevcut değil."));
         Product product = productRepository.findById(createCartItemRequest.getProductId()).orElseThrow(() -> new NullPointerException("Ürün mevcut değil."));
 
@@ -62,17 +64,17 @@ public class CartService {
             // User nesnesini güncelliyoruz
             userRepository.save(user);
 
-
-
         }
-
+        return new SuccessResult("The product has been successfully added to the cart");
     }
 
 
-    public Cart getCart(Long userId) {
+    public DataResult<GetUserCartResponse> getCart(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         calculateTotalPrice(user.getCart());
-        return user != null ? user.getCart()   : null;
+        Cart cart = user.getCart();
+        GetUserCartResponse response = modelMapperService.forResponse().map(cart, GetUserCartResponse.class);
+        return user != null ? new SuccessDataResult<GetUserCartResponse>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"No such user exists.");
     }
 
     public void calculateTotalPrice(Cart cart) {

@@ -3,7 +3,7 @@ package com.devvengers.mjoraste.service.requests;
 import lombok.Data;
 
 @Data
-public class CreateProductSizeRequest {
+public class CreateProductImageRequest {
 
-    private String name;
+    private String imageUrl;
 }

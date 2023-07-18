@@ -1,6 +1,9 @@
 package com.devvengers.mjoraste.service.responses;
 
+import com.devvengers.mjoraste.entities.ProductImage;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class GetAllProductByCategoryIdResponse {
@@ -14,7 +17,7 @@ public class GetAllProductByCategoryIdResponse {
     private double price;
 
 
-    private String img;
+    private List<GetProductImageResponse> images;
 
     private String categoryName;
 

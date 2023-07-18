@@ -1,14 +1,10 @@
 package com.devvengers.mjoraste.service.responses;
 
-import com.devvengers.mjoraste.entities.Brand;
-import com.devvengers.mjoraste.entities.Category;
-import com.devvengers.mjoraste.entities.Color;
-import com.devvengers.mjoraste.entities.Size;
+import com.devvengers.mjoraste.entities.ProductImage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -25,7 +21,7 @@ public class GetAllProductResponse {
     private double price;
 
 
-    private String img;
+    private List<GetProductImageResponse> images;
 
 
     private String brandName;
