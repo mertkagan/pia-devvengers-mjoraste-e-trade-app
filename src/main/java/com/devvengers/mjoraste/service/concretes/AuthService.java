@@ -77,6 +77,7 @@ public class AuthService {
 
 
             User newUser = new User();
+            newUser.setIsAdmin(false);
             newUser.setEmail(userRegisterRequest.getEmail());
             newUser.setName(userRegisterRequest.getName());
             newUser.setSurName(userRegisterRequest.getSurName());
@@ -113,6 +114,7 @@ public class AuthService {
             loginResponse.setSurName(user.getSurName());
             loginResponse.setEmail(user.getEmail());
             loginResponse.setPhoneNumber(user.getPhoneNumber());
+            loginResponse.setIsAdmin(user.getIsAdmin());
             return new SuccessDataResult<LoginResponse>(loginResponse,"Login succesfully.");
         }
 

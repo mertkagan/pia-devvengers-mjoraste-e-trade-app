@@ -20,4 +20,6 @@ public class LoginResponse {
     private String email;
 
     private String phoneNumber;
+
+    private Boolean isAdmin;
 }
