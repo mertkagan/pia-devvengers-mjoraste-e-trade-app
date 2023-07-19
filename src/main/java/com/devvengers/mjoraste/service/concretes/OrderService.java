@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +55,7 @@ public class OrderService {
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
+        order.setOrderCode(generateOrderCode());
         List<OrderItem> orderItems = new ArrayList<>();
         order.setPaymentType(paymentType);
 
@@ -80,6 +82,8 @@ public class OrderService {
 
 
         order.setOrderItems(orderItems);
+        order.setOrderStatus(false);
+        order.setTotalOrderPrice(cart.getTotalPrice());
         cartItems.clear();
         cart.setTotalPrice(0);
         userRepository.save(user);
@@ -102,5 +106,15 @@ public class OrderService {
         return user != null ? new SuccessDataResult<List<GetUserOrderResponse>>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"No such user exists.");
     }
 
+    private String generateOrderCode() {
+        Random random = new Random();
+        StringBuilder orderCode = new StringBuilder();
 
+        for (int i = 0; i < 10; i++) {
+            int randomNumber = random.nextInt(10); // 0 ile 9 arasında rastgele bir sayı alınır
+            orderCode.append(randomNumber); // String'e eklenir
+        }
+
+        return orderCode.toString();
+    }
 }

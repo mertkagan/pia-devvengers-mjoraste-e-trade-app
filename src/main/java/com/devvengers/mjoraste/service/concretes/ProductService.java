@@ -6,16 +6,14 @@ import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.ProductRepository;
 import com.devvengers.mjoraste.service.requests.CreateProductImageRequest;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
-import com.devvengers.mjoraste.service.responses.GetAllProductByCategoryIdResponse;
-import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
-import com.devvengers.mjoraste.service.responses.GetProductImageResponse;
-import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
+import com.devvengers.mjoraste.service.responses.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -113,6 +111,22 @@ public class ProductService {
         }
 
 
+    }
+
+    public DataResult<List<GetProductsBySearchResponse>> getProductsBySearch(String productName){
+
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(productName);
+
+
+        List<GetProductsBySearchResponse> responses = products.stream()
+                .map(product -> this.modelMapperService.forResponse().map(product, GetProductsBySearchResponse.class))
+                .collect(Collectors.toList());
+
+        if (products!= null){
+            return new SuccessDataResult<List<GetProductsBySearchResponse>>(responses,"Data retrieved succesfully");
+        }else {
+            return new ErrorDataResult<>(null,"The product you were looking for was not found");
+        }
     }
 
 

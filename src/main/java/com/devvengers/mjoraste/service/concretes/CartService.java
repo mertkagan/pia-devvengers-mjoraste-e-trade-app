@@ -93,6 +93,30 @@ public class CartService {
         return user != null ? new SuccessDataResult<GetUserCartResponse>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"No such user exists.");
     }
 
+    public Result removeCartItem(Long cartItemId) {
+        Optional<CartItem> optionalCartItem = cartItemRepository.findById(cartItemId);
+        if (optionalCartItem.isPresent()) {
+            CartItem cartItem = optionalCartItem.get();
+            Cart cart = cartItem.getCart();
+
+            // Sepetin total price'ından silinen ürünün fiyatını çıkarıyoruz
+            double totalPrice = cart.getTotalPrice() - cartItem.getTotalItemPrice();
+            cart.setTotalPrice(totalPrice);
+
+            // Sepetten çıkarılan ürünü kaldırıyoruz
+            cart.getCartItems().remove(cartItem);
+
+            // Sepeti ve cartItem'i güncelliyoruz
+            cartRepository.save(cart);
+            cartItemRepository.delete(cartItem);
+
+            return new SuccessResult("Product removed from cart successfully.");
+        } else {
+            return new ErrorResult("CartItem not found.");
+        }
+    }
+
+
     @Transactional
     public Result deleteCartByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);

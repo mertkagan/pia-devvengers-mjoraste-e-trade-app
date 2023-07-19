@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler" ,"orderItems","user"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler" ,"orderItems","user","paymentType"})
 
 public class Order {
 
@@ -37,4 +37,13 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "payment_type_id")
     private PaymentType paymentType;
+
+    @Column(name = "order_code")
+    private String orderCode;
+
+    @Column(name = "order_status")
+    private Boolean orderStatus;
+
+    @Column(name = "total_order_price")
+    private Double totalOrderPrice;
 }

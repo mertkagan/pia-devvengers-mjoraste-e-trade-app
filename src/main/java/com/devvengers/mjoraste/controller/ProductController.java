@@ -7,6 +7,7 @@ import com.devvengers.mjoraste.service.concretes.ProductService;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
 import com.devvengers.mjoraste.service.responses.GetAllProductByCategoryIdResponse;
 import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
+import com.devvengers.mjoraste.service.responses.GetProductsBySearchResponse;
 import com.devvengers.mjoraste.service.responses.ProductDetailsResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -58,6 +59,11 @@ public class ProductController {
     )
     public Result addProduct(@Valid @RequestBody CreateProductRequest createProductRequest){
         return productService.addProduct(createProductRequest);
+    }
+
+    @GetMapping("/searchProductByName/{productName}")
+    public DataResult<List<GetProductsBySearchResponse>> getProductsBySearch(@PathVariable String productName){
+        return productService.getProductsBySearch(productName);
     }
 
 

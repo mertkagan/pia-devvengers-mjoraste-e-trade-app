@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler" ,"product"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler" ,"product","order"})
 
 public class OrderItem {
 
