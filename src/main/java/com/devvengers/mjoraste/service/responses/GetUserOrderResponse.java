@@ -1,5 +1,6 @@
 package com.devvengers.mjoraste.service.responses;
 
+import com.devvengers.mjoraste.entities.Address;
 import com.devvengers.mjoraste.entities.OrderItem;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -20,5 +21,9 @@ public class GetUserOrderResponse {
 
     private List<OrderItem> orderItems; //
 
+    private Address shippingAddress;
+
     private Double totalPrice;
+
+    private Boolean orderStatus;
 }

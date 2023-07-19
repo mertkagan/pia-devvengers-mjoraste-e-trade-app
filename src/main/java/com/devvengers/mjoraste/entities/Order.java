@@ -38,6 +38,10 @@ public class Order {
     @JoinColumn(name = "payment_type_id")
     private PaymentType paymentType;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id")
+    private Address shippingAddress;
+
     @Column(name = "order_code")
     private String orderCode;
 

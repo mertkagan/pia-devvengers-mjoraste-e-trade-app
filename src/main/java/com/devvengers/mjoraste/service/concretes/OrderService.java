@@ -4,6 +4,7 @@ import com.devvengers.mjoraste.core.utilities.mappers.ModelMapperService;
 import com.devvengers.mjoraste.core.utilities.results.*;
 import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.*;
+import com.devvengers.mjoraste.service.requests.CreateOrderRequest;
 import com.devvengers.mjoraste.service.responses.GetUserCartResponse;
 import com.devvengers.mjoraste.service.responses.GetUserOrderResponse;
 import lombok.AllArgsConstructor;
@@ -38,8 +39,10 @@ public class OrderService {
 
     private ModelMapperService modelMapperService;
 
-    public Result createOrder(Long userId,Long paymentTypeId){
-        User user = userRepository.findById(userId).orElse(null);
+    private AddressRepository addressRepository;
+
+    public Result createOrder(CreateOrderRequest createOrderRequest){
+        User user = userRepository.findById(createOrderRequest.getUserId()).orElse(null);
 
         if (user == null) {
             return new ErrorResult("User not found");
@@ -48,7 +51,14 @@ public class OrderService {
         Cart cart = user.getCart();
         List<CartItem> cartItems = cart.getCartItems();
 
-        PaymentType paymentType = paymentTypeService.findById(paymentTypeId);
+        PaymentType paymentType = paymentTypeService.findById(createOrderRequest.getPaymentTypeId());
+
+        Address shippingAddress = new Address();
+        shippingAddress.setCity(createOrderRequest.getCity());
+        shippingAddress.setTown(createOrderRequest.getTown());
+        shippingAddress.setFullAddress(createOrderRequest.getFullAddress());
+        shippingAddress.setUser(user);
+        addressRepository.save(shippingAddress);
 
 
         // Sipariş oluştur
@@ -58,6 +68,7 @@ public class OrderService {
         order.setOrderCode(generateOrderCode());
         List<OrderItem> orderItems = new ArrayList<>();
         order.setPaymentType(paymentType);
+        order.setShippingAddress(shippingAddress);
 
         for (CartItem cartItem : cartItems) {
             Product product = cartItem.getProduct();
@@ -116,5 +127,33 @@ public class OrderService {
         }
 
         return orderCode.toString();
+    }
+
+    public Result updateOrderStatus(Long orderId) {
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+
+        if (order == null) {
+            return new ErrorResult("Order not found");
+        }
+
+        User user = order.getUser();
+        if (user == null) {
+            return new ErrorResult("User not found");
+        }
+
+        Boolean isAdmin = user.getIsAdmin();
+        if (isAdmin == null || !isAdmin) {
+            return new ErrorResult("Unauthorized: Only admins can update order status.");
+        }
+
+        Boolean orderStatus = order.getOrderStatus();
+        if (!orderStatus) {
+            order.setOrderStatus(true);
+            orderRepository.save(order);
+            return new SuccessResult("Status updated successfully.");
+        }
+
+        return new ErrorResult("Something went wrong");
     }
 }
