@@ -8,4 +8,6 @@ public class GetAllCategoryResponse {
     private Long id;
 
     private String name;
+
+    private String imageUrl;
 }

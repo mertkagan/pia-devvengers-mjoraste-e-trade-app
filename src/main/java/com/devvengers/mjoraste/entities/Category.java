@@ -24,6 +24,9 @@ public class Category {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 

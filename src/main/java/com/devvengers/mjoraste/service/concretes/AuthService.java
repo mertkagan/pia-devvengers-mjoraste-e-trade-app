@@ -51,12 +51,12 @@ public class AuthService {
             return new ErrorDataResult(message, UNSUCCESS);
         }
         if (existingUserByPhoneNumber != null) {
-            String message = "Girilen e-mail zaten kayıtlı! ";
+            String message = "Girilen telefon zaten kayıtlı! ";
             return new ErrorDataResult(message, UNSUCCESS);
         }
         if (bindingResult.hasErrors()) {
             if (bindingResult.hasFieldErrors("name")) {
-                errorMessage += "Name alanı boş bırakılamaz. ";
+                errorMessage += "İsim alanı boş bırakılamaz. ";
             }
             if (bindingResult.hasFieldErrors("email")) {
                 errorMessage += "E-mail alanı boş bırakılamaz. ";

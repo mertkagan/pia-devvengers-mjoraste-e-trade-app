@@ -43,36 +43,49 @@ public class CartService {
                 cart = new Cart();
                 cart.setUser(user);
                 user.setCart(cart);
-                // Cart nesnesini önce kaydediyoruz
-                cartRepository.save(cart); // Cart nesnesini kaydedin
+                cartRepository.save(cart);
             }
 
             CartItem cartItem = new CartItem();
             cartItem.setProduct(product);
-            cartItem.setQuantity(createCartItemRequest.getQuantity());
-            cartItem.setTotalItemPrice( (createCartItemRequest.getQuantity()*product.getPrice()) );
-            cartItem.setCart(cart);
+            int quantity = createCartItemRequest.getQuantity();
 
-            // CartItem nesnesini önce kaydediyoruz
+            // Ürün adedi sıfırdan büyük veya eşit olmalıdır
+            if (quantity <= 0) {
+                return new ErrorResult("Ürün adedi geçersiz.");
+            }
 
-            cartItemRepository.save(cartItem);
+            // Stok kontrolü yapmalıyız
+            if (product.getStock() >= quantity) {
+                cartItem.setQuantity(quantity);
+                cartItem.setTotalItemPrice(quantity * product.getPrice());
+                cartItem.setCart(cart);
+                cartItemRepository.save(cartItem);
 
-            // Cart nesnesine CartItem ekleyip veritabanında güncelliyoruz
-            cart.getCartItems().add(cartItem);
+                // Cart nesnesine CartItem ekleyip veritabanında güncelliyoruz
+                cart.getCartItems().add(cartItem);
 
-            cartRepository.save(cart);
+                // Toplam fiyatı hesaplamak için calculateTotalPrice metodunu çağırıyoruz
+                calculateTotalPrice(cart);
 
-            // User nesnesini güncelliyoruz
-            userRepository.save(user);
+                // Veritabanına kartı kaydediyoruz
+                cartRepository.save(cart);
 
+                // User nesnesini güncelliyoruz
+                userRepository.save(user);
+
+                return new SuccessResult("Ürün başarıyla sepete eklendi.");
+            } else {
+                return new ErrorResult("Stok yetersiz.");
+            }
         }
-        return new SuccessResult("The product has been successfully added to the cart");
+
+        return new ErrorResult("Bir sorun oluştu.");
     }
 
 
     public DataResult<GetUserCartResponse> getCart(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
-        calculateTotalPrice(user.getCart());
         Cart cart = user.getCart();
         GetUserCartResponse response = modelMapperService.forResponse().map(cart, GetUserCartResponse.class);
         return user != null ? new SuccessDataResult<GetUserCartResponse>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"No such user exists.");
@@ -97,7 +110,7 @@ public class CartService {
             totalPrice += cartItem.getTotalItemPrice();
         }
         cart.setTotalPrice(totalPrice);
-        cartRepository.save(cart);
+        cartRepository.save(cart); // totalPrice güncellendiğinde veritabanına kaydediyoruz
     }
 
 }
