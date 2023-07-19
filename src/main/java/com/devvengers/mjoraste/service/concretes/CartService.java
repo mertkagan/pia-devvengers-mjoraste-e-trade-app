@@ -65,11 +65,13 @@ public class CartService {
                 // Cart nesnesine CartItem ekleyip veritabanında güncelliyoruz
                 cart.getCartItems().add(cartItem);
 
-                // Toplam fiyatı hesaplamak için calculateTotalPrice metodunu çağırıyoruz
-                calculateTotalPrice(cart);
+
 
                 // Veritabanına kartı kaydediyoruz
                 cartRepository.save(cart);
+
+                // Toplam fiyatı hesaplamak için calculateTotalPrice metodunu çağırıyoruz
+                calculateTotalPrice(cart);
 
                 // User nesnesini güncelliyoruz
                 userRepository.save(user);

@@ -1,12 +1,11 @@
 package com.devvengers.mjoraste.service.concretes;
 
-import com.devvengers.mjoraste.core.utilities.results.DataResult;
-import com.devvengers.mjoraste.core.utilities.results.ErrorResult;
-import com.devvengers.mjoraste.core.utilities.results.Result;
-import com.devvengers.mjoraste.core.utilities.results.SuccessResult;
+import com.devvengers.mjoraste.core.utilities.mappers.ModelMapperService;
+import com.devvengers.mjoraste.core.utilities.results.*;
 import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.*;
 import com.devvengers.mjoraste.service.responses.GetUserCartResponse;
+import com.devvengers.mjoraste.service.responses.GetUserOrderResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +34,8 @@ public class OrderService {
     private ProductRepository productRepository;
 
     private OrderItemRepository orderItemRepository;
+
+    private ModelMapperService modelMapperService;
 
     public Result createOrder(Long userId,Long paymentTypeId){
         User user = userRepository.findById(userId).orElse(null);
@@ -88,4 +90,17 @@ public class OrderService {
 
         return new SuccessResult("Created");
     }
+
+
+    public DataResult<List<GetUserOrderResponse>> getUserOrders(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        List<Order> orders = user.getOrders();
+        List<GetUserOrderResponse> response = orders.stream()
+                .map(order -> this.modelMapperService.forResponse().map(order, GetUserOrderResponse.class))
+                .collect(Collectors.toList());
+
+        return user != null ? new SuccessDataResult<List<GetUserOrderResponse>>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"No such user exists.");
+    }
+
+
 }

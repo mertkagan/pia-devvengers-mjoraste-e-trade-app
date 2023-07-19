@@ -107,7 +107,12 @@ public class AuthService {
 
         if (isPwdRight){
             Optional<User> user1 = userRepository.findOneByEmailAndPassword(userLoginRequest.getEmail(),encodedPassword);
-            LoginResponse loginResponse = new LoginResponse(user.getId(),user.getEmail(),user.getName(),user.getSurName(),user.getPhoneNumber());
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setId(user.getId());
+            loginResponse.setName(user.getName());
+            loginResponse.setSurName(user.getSurName());
+            loginResponse.setEmail(user.getEmail());
+            loginResponse.setPhoneNumber(user.getPhoneNumber());
             return new SuccessDataResult<LoginResponse>(loginResponse,"Login succesfully.");
         }
 
