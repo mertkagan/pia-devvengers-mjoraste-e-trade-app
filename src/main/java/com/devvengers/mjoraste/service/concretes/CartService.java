@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -122,8 +123,11 @@ public class CartService {
         Optional<User> user = userRepository.findById(userId);
 
         if (user.isPresent()){
-            cartRepository.deleteByUserId(userId);
-            return new SuccessResult("Cart deleted.");
+            Cart cart = user.get().getCart();
+            List<CartItem> cartItems = cart.getCartItems();
+            cartItems.clear();
+            cart.setTotalPrice(0);
+            return new SuccessResult("Cart succesfully cleared.");
         }else {
             return new ErrorResult("User not found");
         }
