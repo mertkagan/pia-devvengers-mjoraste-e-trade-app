@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface AboutRepository extends MongoRepository<About, String> {
 
-Optional<About> findById(String _id);
 
 
 }

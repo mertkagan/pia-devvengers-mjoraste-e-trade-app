@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class GetAboutResponse {
 
-    private String _id;
-    private String address;
+
+    private String aboutText;
 }

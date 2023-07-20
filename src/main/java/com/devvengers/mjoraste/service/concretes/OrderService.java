@@ -6,13 +6,10 @@ import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.*;
 import com.devvengers.mjoraste.service.requests.CreateOrderRequest;
 import com.devvengers.mjoraste.service.responses.GetAllOrdersResponse;
-import com.devvengers.mjoraste.service.responses.GetUserCartResponse;
 import com.devvengers.mjoraste.service.responses.GetUserOrderResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;

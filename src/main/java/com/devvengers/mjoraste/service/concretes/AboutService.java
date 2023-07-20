@@ -12,6 +12,7 @@ import com.devvengers.mjoraste.service.responses.GetUserAddressResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,11 +21,9 @@ public class AboutService {
     private AboutRepository aboutRepository;
     private ModelMapperService modelMapperService;
 
-    public DataResult<GetAboutResponse> getAbout(){
-        String id =  "64b839a208c5e53cc41e91c8";
-        Optional<About> about = aboutRepository.findById(id);
-        GetAboutResponse response = this.modelMapperService.forResponse().map(about, GetAboutResponse.class);
-        return new SuccessDataResult<GetAboutResponse>(response,"Data retrieved succesfully");
+    public List<About> getAbout(){
+
+     return aboutRepository.findAll();
     }
 
 }

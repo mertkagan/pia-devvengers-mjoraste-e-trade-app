@@ -1,25 +1,20 @@
 package com.devvengers.mjoraste.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "About")
+@Document(collection = "about")
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
-
 public class About {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String _id;
+    private String id;
 
-    private String address;
+    private String aboutText;
 
 }
