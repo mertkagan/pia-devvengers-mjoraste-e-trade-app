@@ -5,6 +5,7 @@ import com.devvengers.mjoraste.core.utilities.results.Result;
 import com.devvengers.mjoraste.entities.Product;
 import com.devvengers.mjoraste.service.concretes.ProductService;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
+import com.devvengers.mjoraste.service.requests.UpdateProductStockRequest;
 import com.devvengers.mjoraste.service.responses.GetAllProductByCategoryIdResponse;
 import com.devvengers.mjoraste.service.responses.GetAllProductResponse;
 import com.devvengers.mjoraste.service.responses.GetProductsBySearchResponse;
@@ -64,6 +65,16 @@ public class ProductController {
     @GetMapping("/searchProductByName/{productName}")
     public DataResult<List<GetProductsBySearchResponse>> getProductsBySearch(@PathVariable String productName){
         return productService.getProductsBySearch(productName);
+    }
+
+    @PutMapping("/updateStock")
+    public Result updateProductStock(@RequestBody UpdateProductStockRequest updateProductStockRequest){
+        return productService.updateProductStockByProductId(updateProductStockRequest);
+    }
+
+    @DeleteMapping("/deleteProductById")
+    public Result deleteProductById(@RequestParam Long productId){
+        return productService.deleteProductByProductId(productId);
     }
 
 

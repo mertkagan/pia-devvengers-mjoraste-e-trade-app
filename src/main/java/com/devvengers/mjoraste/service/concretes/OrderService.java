@@ -5,6 +5,7 @@ import com.devvengers.mjoraste.core.utilities.results.*;
 import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.*;
 import com.devvengers.mjoraste.service.requests.CreateOrderRequest;
+import com.devvengers.mjoraste.service.responses.GetAllOrdersResponse;
 import com.devvengers.mjoraste.service.responses.GetUserCartResponse;
 import com.devvengers.mjoraste.service.responses.GetUserOrderResponse;
 import lombok.AllArgsConstructor;
@@ -41,8 +42,19 @@ public class OrderService {
 
     private AddressRepository addressRepository;
 
-    public Result createOrder(CreateOrderRequest createOrderRequest){
-        User user = userRepository.findById(createOrderRequest.getUserId()).orElse(null);
+
+    public DataResult<List<GetAllOrdersResponse>> getAllOrders(){
+        List<Order> orders = orderRepository.findAll();
+
+        List<GetAllOrdersResponse> response = orders.stream()
+                .map(order -> this.modelMapperService.forResponse().map(order, GetAllOrdersResponse.class))
+                .collect(Collectors.toList());
+
+        return new SuccessDataResult<List<GetAllOrdersResponse>>(response,"Data retrieved succesfully.");
+    }
+
+    public Result createOrder(Long userId,CreateOrderRequest createOrderRequest){
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
             return new ErrorResult("User not found");
@@ -135,16 +147,6 @@ public class OrderService {
 
         if (order == null) {
             return new ErrorResult("Order not found");
-        }
-
-        User user = order.getUser();
-        if (user == null) {
-            return new ErrorResult("User not found");
-        }
-
-        Boolean isAdmin = user.getIsAdmin();
-        if (isAdmin == null || !isAdmin) {
-            return new ErrorResult("Unauthorized: Only admins can update order status.");
         }
 
         Boolean orderStatus = order.getOrderStatus();

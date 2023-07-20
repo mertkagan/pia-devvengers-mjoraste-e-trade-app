@@ -20,14 +20,13 @@ public class CartController {
 
 
     @PostMapping("/{userId}/add")
-    public Result addToCart(@RequestParam Long userId, @RequestBody CreateCartItemRequest cartItemRequest) {
+    public Result addToCart(@PathVariable Long userId, @RequestBody CreateCartItemRequest cartItemRequest) {
         return cartService.addToCart(userId, cartItemRequest);
 
     }
 
     @GetMapping("/{userId}")
     public DataResult<GetUserCartResponse> getCart(@PathVariable Long userId) {
-        //art cart = cartService.getCart(userId);
         return cartService.getCart(userId);
     }
 

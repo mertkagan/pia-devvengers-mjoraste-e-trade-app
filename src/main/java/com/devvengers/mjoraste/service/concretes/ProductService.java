@@ -6,6 +6,7 @@ import com.devvengers.mjoraste.entities.*;
 import com.devvengers.mjoraste.repository.ProductRepository;
 import com.devvengers.mjoraste.service.requests.CreateProductImageRequest;
 import com.devvengers.mjoraste.service.requests.CreateProductRequest;
+import com.devvengers.mjoraste.service.requests.UpdateProductStockRequest;
 import com.devvengers.mjoraste.service.responses.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -129,7 +130,29 @@ public class ProductService {
         }
     }
 
+    public Result deleteProductByProductId(Long productId){
 
+        Product product = productRepository.findById(productId).orElse(null);
+        if(product == null) {
+            return new ErrorResult("Product not found.");
+        }
+
+        productRepository.deleteById(productId);
+        return new SuccessResult("Product deleted succesfully");
+    }
+
+    public Result updateProductStockByProductId(UpdateProductStockRequest updateProductStockRequest) {
+        Product product = productRepository.findById(updateProductStockRequest.getProductId()).orElse(null);
+
+        if (product == null){
+            return new ErrorResult("Product not found");
+        }
+
+        product.setStock(updateProductStockRequest.getStock());
+        productRepository.save(product);
+
+        return new SuccessResult("Product stock updated succesfully.");
+    }
 }
 
 
