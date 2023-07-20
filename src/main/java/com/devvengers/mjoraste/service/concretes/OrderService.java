@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -121,6 +118,9 @@ public class OrderService {
     public DataResult<List<GetUserOrderResponse>> getUserOrders(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         List<Order> orders = user.getOrders();
+
+        Collections.sort(orders, Comparator.comparing(Order::getOrderDate).reversed());
+
         List<GetUserOrderResponse> response = orders.stream()
                 .map(order -> this.modelMapperService.forResponse().map(order, GetUserOrderResponse.class))
                 .collect(Collectors.toList());
