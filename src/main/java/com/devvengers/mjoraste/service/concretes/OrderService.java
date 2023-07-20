@@ -58,7 +58,12 @@ public class OrderService {
         }
 
         Cart cart = user.getCart();
+
         List<CartItem> cartItems = cart.getCartItems();
+
+        if (cartItems.isEmpty()) {
+            return new ErrorResult("Cart is empty. Cannot create an order with an empty cart.");
+        }
 
         PaymentType paymentType = paymentTypeService.findById(createOrderRequest.getPaymentTypeId());
 
