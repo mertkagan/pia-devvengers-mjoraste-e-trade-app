@@ -51,39 +51,39 @@ public class CartService {
             cartItem.setProduct(product);
             int quantity = createCartItemRequest.getQuantity();
 
-            // Ürün adedi sıfırdan büyük veya eşit olmalıdır
+
             if (quantity <= 0) {
-                return new ErrorResult("Ürün adedi geçersiz.");
+                return new ErrorResult("The item quantity is invalid.");
             }
 
-            // Stok kontrolü yapmalıyız
+
             if (product.getStock() >= quantity) {
                 cartItem.setQuantity(quantity);
                 cartItem.setTotalItemPrice(quantity * product.getPrice());
                 cartItem.setCart(cart);
                 cartItemRepository.save(cartItem);
 
-                // Cart nesnesine CartItem ekleyip veritabanında güncelliyoruz
+
                 cart.getCartItems().add(cartItem);
 
 
 
-                // Veritabanına kartı kaydediyoruz
+
                 cartRepository.save(cart);
 
-                // Toplam fiyatı hesaplamak için calculateTotalPrice metodunu çağırıyoruz
+
                 calculateTotalPrice(cart);
 
-                // User nesnesini güncelliyoruz
+
                 userRepository.save(user);
 
-                return new SuccessResult("Ürün başarıyla sepete eklendi.");
+                return new SuccessResult("The product has been successfully added to the cart.");
             } else {
-                return new ErrorResult("Stok yetersiz.");
+                return new ErrorResult("Insufficient stock");
             }
         }
 
-        return new ErrorResult("Bir sorun oluştu.");
+        return new ErrorResult("Something went wrong.");
     }
 
 
@@ -100,14 +100,14 @@ public class CartService {
             CartItem cartItem = optionalCartItem.get();
             Cart cart = cartItem.getCart();
 
-            // Sepetin total price'ından silinen ürünün fiyatını çıkarıyoruz
+
             double totalPrice = cart.getTotalPrice() - cartItem.getTotalItemPrice();
             cart.setTotalPrice(totalPrice);
 
-            // Sepetten çıkarılan ürünü kaldırıyoruz
+
             cart.getCartItems().remove(cartItem);
 
-            // Sepeti ve cartItem'i güncelliyoruz
+
             cartRepository.save(cart);
             cartItemRepository.delete(cartItem);
 
@@ -129,7 +129,7 @@ public class CartService {
             cart.setTotalPrice(0);
             return new SuccessResult("Cart succesfully cleared.");
         }else {
-            return new ErrorResult("User not found");
+            return new ErrorResult("User not found.");
         }
 
     }
@@ -140,7 +140,7 @@ public class CartService {
             totalPrice += cartItem.getTotalItemPrice();
         }
         cart.setTotalPrice(totalPrice);
-        cartRepository.save(cart); // totalPrice güncellendiğinde veritabanına kaydediyoruz
+        cartRepository.save(cart);
     }
 
 }

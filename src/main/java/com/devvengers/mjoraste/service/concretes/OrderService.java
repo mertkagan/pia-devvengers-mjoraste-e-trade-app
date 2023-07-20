@@ -73,7 +73,7 @@ public class OrderService {
         addressRepository.save(shippingAddress);
 
 
-        // Sipariş oluştur
+
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
@@ -87,7 +87,6 @@ public class OrderService {
             int quantity = cartItem.getQuantity();
 
             if (product.getStock() >= quantity) {
-                // Stok yeterliyse, sipariş öğesi oluştur ve stoktan ürün adedini düşür
                 OrderItem orderItem = new OrderItem();
                 orderItem.setProduct(product);
                 orderItem.setQuantity(quantity);
@@ -99,7 +98,7 @@ public class OrderService {
                 product.setStock(product.getStock() - quantity);
                 productRepository.save(product);
             } else {
-                return new ErrorResult("Stock Error"); // Stok yetersizse sipariş oluşturma işlemi başarısız olur
+                return new ErrorResult("Insufficient stock");
             }
         }
 
@@ -115,7 +114,7 @@ public class OrderService {
 
 
 
-        return new SuccessResult("Created");
+        return new SuccessResult("Order received successfully");
     }
 
 
@@ -126,7 +125,7 @@ public class OrderService {
                 .map(order -> this.modelMapperService.forResponse().map(order, GetUserOrderResponse.class))
                 .collect(Collectors.toList());
 
-        return user != null ? new SuccessDataResult<List<GetUserOrderResponse>>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"No such user exists.");
+        return user != null ? new SuccessDataResult<List<GetUserOrderResponse>>(response,"Data retrieved succesfully")   : new ErrorDataResult<>(null,"User not found with the given ID.");
     }
 
     private String generateOrderCode() {
@@ -134,8 +133,8 @@ public class OrderService {
         StringBuilder orderCode = new StringBuilder();
 
         for (int i = 0; i < 10; i++) {
-            int randomNumber = random.nextInt(10); // 0 ile 9 arasında rastgele bir sayı alınır
-            orderCode.append(randomNumber); // String'e eklenir
+            int randomNumber = random.nextInt(10);
+            orderCode.append(randomNumber);
         }
 
         return orderCode.toString();
@@ -146,7 +145,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElse(null);
 
         if (order == null) {
-            return new ErrorResult("Order not found");
+            return new ErrorResult("Order not found with the given ID.");
         }
 
         Boolean orderStatus = order.getOrderStatus();

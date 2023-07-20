@@ -39,9 +39,9 @@ public class AddressService {
 
             addressRepository.save(address);
 
-            // Kullanıcının adres alanını güncelleyin
+
             user.setAddress(address);
-            userRepository.save(user); // Kullanıcıyı güncelleyin
+            userRepository.save(user);
 
             return new SuccessResult("User address created successfully.");
         } else {
